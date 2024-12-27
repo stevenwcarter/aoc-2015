@@ -1,15 +1,11 @@
+use rayon::prelude::*;
 use std::hash::DefaultHasher;
 use std::hash::Hash;
 use std::hash::Hasher;
 
 use hashbrown::HashSet;
-use linked_hash_set::LinkedHashSet;
 
 advent_of_code::solution!(9);
-
-// London to Dublin = 464
-// London to Belfast = 518
-// Dublin to Belfast = 141
 
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct Dest {
@@ -34,15 +30,6 @@ impl Dest {
             dst: calculate_hash(&dest),
             dist: distance.parse::<u16>().unwrap(),
         }
-    }
-
-    pub fn successors(&self, dests: &[Dest], seen: &HashSet<Dest>) -> Vec<Dest> {
-        dests
-            .iter()
-            .filter(|d| d.src == self.dst)
-            .filter(|d| !seen.contains(*d))
-            .cloned()
-            .collect()
     }
 }
 
@@ -75,11 +62,7 @@ pub fn shortest(
             }
         })
         .filter_map(|d| {
-            let new_src = if d.src.eq(&src) {
-                d.dst.clone()
-            } else {
-                d.src.clone()
-            };
+            let new_src = if d.src.eq(&src) { d.dst } else { d.src };
             shortest(
                 distance + d.dist as u32,
                 unique_dests.clone(),
@@ -108,11 +91,7 @@ pub fn longest(distance: u32, unique_dests: HashSet<u64>, src: u64, dests: &[Des
             }
         })
         .filter_map(|d| {
-            let new_src = if d.src.eq(&src) {
-                d.dst.clone()
-            } else {
-                d.src.clone()
-            };
+            let new_src = if d.src.eq(&src) { d.dst } else { d.src };
             longest(
                 distance + d.dist as u32,
                 unique_dests.clone(),
@@ -138,7 +117,7 @@ impl Solver {
             unique_dests.insert(d.src);
         });
         unique_dests
-            .iter()
+            .par_iter()
             .filter_map(|d| {
                 let mut unique_dests = unique_dests.clone();
                 unique_dests.remove(d);
@@ -152,7 +131,7 @@ impl Solver {
             unique_dests.insert(d.src);
         });
         unique_dests
-            .iter()
+            .par_iter()
             .filter_map(|d| {
                 let mut unique_dests = unique_dests.clone();
                 unique_dests.remove(d);
