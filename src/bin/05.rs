@@ -58,7 +58,7 @@ mod tests {
 
     #[test]
     fn test_has_non_overlapping() {
-        assert!(has_non_overlapping("qhirixgwkkccuzlp"));
+        assert!(!has_non_overlapping("qhirixgwkkccuzlp"));
         assert!(has_non_overlapping("aabcdefgaa"));
         assert!(has_non_overlapping("xyxy"));
         assert!(!has_non_overlapping("aaa"));
