@@ -1,8 +1,6 @@
-use dashmap::DashMap;
 use hashbrown::HashMap;
 use itertools::Itertools;
 use once_cell::sync::Lazy;
-use rayon::prelude::*;
 
 advent_of_code::solution!(14);
 
