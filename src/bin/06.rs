@@ -2,6 +2,7 @@ use std::ops::RangeInclusive;
 
 use advent_of_code::SmallPoint;
 use hashbrown::HashMap;
+use rayon::prelude::*;
 
 advent_of_code::solution!(6);
 
@@ -133,23 +134,59 @@ impl LightGrid2 {
 }
 
 pub fn part_one(input: &str) -> Option<usize> {
-    let mut lights = LightGrid::default();
-    input
-        .lines()
-        .map(Instruction::parse)
-        .for_each(|i| lights.process_instruction(&i));
+    let data: Vec<Instruction> = input.lines().map(Instruction::parse).collect();
 
-    Some(lights.illuminated_count())
+    Some(
+        (0..1000)
+            .par_bridge()
+            .map(|y| {
+                (0..1000)
+                    .filter(|&x| {
+                        data.iter()
+                            .filter(|inst| {
+                                inst.x_range.contains(&x) && inst.y_range.contains(&(y as u16))
+                            })
+                            .fold(false, |state, inst| match inst.instruction_type {
+                                ON => true,
+                                OFF => false,
+                                TOGGLE => !state,
+                            })
+                    })
+                    .count()
+            })
+            .sum(),
+    )
+    // input
+    //     .lines()
+    //     .map(Instruction::parse)
+    //     .for_each(|i| lights.process_instruction(&i));
+
+    // Some(lights.illuminated_count())
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
-    let mut lights = LightGrid2::default();
-    input
-        .lines()
-        .map(Instruction::parse)
-        .for_each(|i| lights.process_instruction(&i));
+    let data: Vec<Instruction> = input.lines().map(Instruction::parse).collect();
 
-    Some(lights.total_illumination())
+    Some(
+        (0..1000)
+            .par_bridge()
+            .map(|y| {
+                (0..1000)
+                    .map(|x| {
+                        data.iter()
+                            .filter(|inst| {
+                                inst.x_range.contains(&x) && inst.y_range.contains(&(y as u16))
+                            })
+                            .fold(0u32, |state, inst| match inst.instruction_type {
+                                ON => state + 1,
+                                OFF => state.saturating_sub(1),
+                                TOGGLE => state + 2,
+                            })
+                    })
+                    .sum::<u32>()
+            })
+            .sum::<u32>(),
+    )
 }
 
 // #[cfg(test)]
