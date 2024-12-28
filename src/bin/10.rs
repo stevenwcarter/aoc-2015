@@ -1,6 +1,9 @@
+use cached::proc_macro::cached;
+
 advent_of_code::solution!(10);
 
-fn look_and_say(input: &str) -> String {
+#[cached]
+fn look_and_say(input: String) -> String {
     let mut result = String::new();
     let mut chars = input.chars().peekable();
 
@@ -25,7 +28,7 @@ fn look_and_say(input: &str) -> String {
 pub fn part_one(input: &str) -> Option<usize> {
     let mut input = input.trim().to_owned();
     for _ in 0..40 {
-        input = look_and_say(&input);
+        input = look_and_say(input);
     }
 
     Some(input.len())
@@ -34,7 +37,7 @@ pub fn part_one(input: &str) -> Option<usize> {
 pub fn part_two(input: &str) -> Option<usize> {
     let mut input = input.trim().to_owned();
     for _ in 0..50 {
-        input = look_and_say(&input);
+        input = look_and_say(input);
     }
 
     Some(input.len())
@@ -46,11 +49,11 @@ mod tests {
 
     #[test]
     fn test_build() {
-        assert_eq!(look_and_say("1"), "11".to_string());
-        assert_eq!(look_and_say("11"), "21".to_string());
-        assert_eq!(look_and_say("1211"), "111221".to_string());
-        assert_eq!(look_and_say("21"), "1211".to_string());
-        assert_eq!(look_and_say("111221"), "312211".to_string());
+        assert_eq!(look_and_say("1".to_string()), "11".to_string());
+        assert_eq!(look_and_say("11".to_string()), "21".to_string());
+        assert_eq!(look_and_say("1211".to_string()), "111221".to_string());
+        assert_eq!(look_and_say("21".to_string()), "1211".to_string());
+        assert_eq!(look_and_say("111221".to_string()), "312211".to_string());
     }
 
     // #[test]
