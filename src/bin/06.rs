@@ -1,51 +1,8 @@
 use std::ops::RangeInclusive;
 
-use advent_of_code::SmallPoint;
-use hashbrown::HashMap;
 use rayon::prelude::*;
 
 advent_of_code::solution!(6);
-
-// TODO: see if its faster to go through each instruction considering individual grid points
-// (will use less memory, and don't need a container structure at all)
-
-pub struct LightGrid {
-    pub grid: HashMap<SmallPoint, bool>,
-}
-pub struct LightGrid2 {
-    pub grid: HashMap<SmallPoint, u8>,
-}
-
-impl Default for LightGrid {
-    fn default() -> Self {
-        let mut grid = HashMap::new();
-
-        for y in 0..1000 {
-            for x in 0..1000 {
-                let p = SmallPoint::from((x as u16, y));
-
-                grid.insert(p, false);
-            }
-        }
-
-        Self { grid }
-    }
-}
-impl Default for LightGrid2 {
-    fn default() -> Self {
-        let mut grid = HashMap::new();
-
-        for y in 0..1000 {
-            for x in 0..1000 {
-                let p = SmallPoint::from((x as u16, y));
-
-                grid.insert(p, 0);
-            }
-        }
-
-        Self { grid }
-    }
-}
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum InstructionType {
@@ -89,50 +46,6 @@ impl Instruction {
     }
 }
 
-impl LightGrid {
-    pub fn process_instruction(&mut self, instruction: &Instruction) {
-        for y in instruction.y_range.clone() {
-            for x in instruction.x_range.clone() {
-                let pt = SmallPoint::from((x, y));
-                match instruction.instruction_type {
-                    ON => *self.grid.get_mut(&pt).unwrap() = true,
-                    OFF => *self.grid.get_mut(&pt).unwrap() = false,
-                    TOGGLE => {
-                        let pt = SmallPoint::from((x, y));
-                        let grid_pt = self.grid.get_mut(&pt).unwrap();
-                        *grid_pt = !*grid_pt;
-                    }
-                }
-            }
-        }
-    }
-
-    pub fn illuminated_count(&self) -> usize {
-        self.grid.iter().filter(|(_, &s)| s).count()
-    }
-}
-impl LightGrid2 {
-    pub fn process_instruction(&mut self, instruction: &Instruction) {
-        for y in instruction.y_range.clone() {
-            for x in instruction.x_range.clone() {
-                let pt = SmallPoint::from((x, y));
-                match instruction.instruction_type {
-                    ON => *self.grid.get_mut(&pt).unwrap() += 1,
-                    OFF => {
-                        let grid_pt = self.grid.get_mut(&pt).unwrap();
-                        *grid_pt = grid_pt.saturating_sub(1);
-                    }
-                    TOGGLE => *self.grid.get_mut(&pt).unwrap() += 2,
-                }
-            }
-        }
-    }
-
-    pub fn total_illumination(&self) -> u32 {
-        self.grid.iter().map(|(_, &s)| s as u32).sum()
-    }
-}
-
 pub fn part_one(input: &str) -> Option<usize> {
     let data: Vec<Instruction> = input.lines().map(Instruction::parse).collect();
 
@@ -156,12 +69,6 @@ pub fn part_one(input: &str) -> Option<usize> {
             })
             .sum(),
     )
-    // input
-    //     .lines()
-    //     .map(Instruction::parse)
-    //     .for_each(|i| lights.process_instruction(&i));
-
-    // Some(lights.illuminated_count())
 }
 
 pub fn part_two(input: &str) -> Option<u32> {
