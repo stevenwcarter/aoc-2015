@@ -1,5 +1,13 @@
 pub mod template;
 
+pub fn presents_delivered_to_house_part1(input: usize) -> usize {
+    input * 10
+        + (1..(input / 2) + 1)
+            .filter(|n| input % n == 0)
+            .map(|n| n * 10)
+            .sum::<usize>()
+}
+
 // Use this file to add helper functions and additional modules.
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Hash, PartialOrd, Ord)]
@@ -258,5 +266,41 @@ mod tests {
         assert_eq!(point.left_n(11, None), None);
         assert_eq!(point.left_n(10, None), Some((0u32, 10).into()));
         assert_eq!(point.left_n(1, None), Some((9u32, 10).into()));
+    }
+    #[test]
+    fn test_house_1() {
+        assert_eq!(presents_delivered_to_house_part1(1), 10);
+    }
+    #[test]
+    fn test_house_part1_2() {
+        assert_eq!(presents_delivered_to_house_part1(2), 30);
+    }
+    #[test]
+    fn test_house_part1_3() {
+        assert_eq!(presents_delivered_to_house_part1(3), 40);
+    }
+    #[test]
+    fn test_house_part1_4() {
+        assert_eq!(presents_delivered_to_house_part1(4), 70);
+    }
+    #[test]
+    fn test_house_part1_5() {
+        assert_eq!(presents_delivered_to_house_part1(5), 60);
+    }
+    #[test]
+    fn test_house_part1_6() {
+        assert_eq!(presents_delivered_to_house_part1(6), 120);
+    }
+    #[test]
+    fn test_house_part1_7() {
+        assert_eq!(presents_delivered_to_house_part1(7), 80);
+    }
+    #[test]
+    fn test_house_part1_8() {
+        assert_eq!(presents_delivered_to_house_part1(8), 150);
+    }
+    #[test]
+    fn test_house_part1_9() {
+        assert_eq!(presents_delivered_to_house_part1(9), 130);
     }
 }

@@ -40,3 +40,10 @@ tinyjson = "2.5.1"
 unescaper = "0.1.5"
 
 # Solution dependencies
+
+[dev-dependencies]
+criterion = { version = "0.4", features = ["html_reports"] }
+
+[[bench]]
+name = "day20"
+harness = false
