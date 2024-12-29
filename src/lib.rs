@@ -1,11 +1,35 @@
 pub mod template;
 
 pub fn presents_delivered_to_house_part1(input: usize) -> usize {
-    input * 10
-        + (1..(input / 2) + 1)
-            .filter(|n| input % n == 0)
-            .map(|n| n * 10)
-            .sum::<usize>()
+    let sqrt_n = (input as f64).sqrt() as usize;
+
+    (1..=sqrt_n)
+        .filter(|n| input % n == 0)
+        .map(|n| {
+            if n != input / n {
+                (input / n) * 10 + n * 10
+            } else {
+                n * 10
+            }
+        })
+        .sum()
+}
+pub fn presents_delivered_to_house_part2(input: usize) -> usize {
+    let sqrt_n = (input as f64).sqrt() as usize;
+
+    (1..=sqrt_n)
+        .filter(|n| input % n == 0)
+        .map(|n| {
+            let upper_n = input / n;
+            if n != upper_n && upper_n * 50 > input {
+                upper_n * 11 + n * 11
+            } else if n * 50 > input {
+                n * 11
+            } else {
+                0
+            }
+        })
+        .sum()
 }
 
 // Use this file to add helper functions and additional modules.
@@ -272,8 +296,20 @@ mod tests {
         assert_eq!(presents_delivered_to_house_part1(1), 10);
     }
     #[test]
+    fn test_house_1_part2() {
+        assert_eq!(presents_delivered_to_house_part2(1), 11);
+    }
+    #[test]
+    fn test_problem_1() {
+        assert_eq!(presents_delivered_to_house_part1(776160), 33611760);
+    }
+    #[test]
     fn test_house_part1_2() {
         assert_eq!(presents_delivered_to_house_part1(2), 30);
+    }
+    #[test]
+    fn test_house_part1_2_part2() {
+        assert_eq!(presents_delivered_to_house_part2(2), 33);
     }
     #[test]
     fn test_house_part1_3() {
@@ -302,5 +338,9 @@ mod tests {
     #[test]
     fn test_house_part1_9() {
         assert_eq!(presents_delivered_to_house_part1(9), 130);
+    }
+    #[test]
+    fn test_house_part1_9_part2() {
+        assert_eq!(presents_delivered_to_house_part2(9), 143);
     }
 }
