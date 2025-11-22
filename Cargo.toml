@@ -41,6 +41,7 @@ rayon = "1.10.0"
 serde_json = "1.0.134"
 tinyjson = "2.5.1"
 unescaper = "0.1.5"
+aoc-mine = { git = "https://github.com/stevenwcarter/aoc-mine.git" }
 
 # Solution dependencies
 

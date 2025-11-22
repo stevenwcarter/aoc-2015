@@ -1,54 +1,44 @@
+use aoc_mine::Coord;
 use hashbrown::HashMap;
 
 advent_of_code::solution!(3);
 
-pub fn part_one(input: &str) -> Option<usize> {
-    let mut houses: HashMap<(i32, i32), u32> = HashMap::new();
-    let mut x: i32 = 0;
-    let mut y: i32 = 0;
-    *houses.entry((x, y)).or_insert(0) += 1;
-    input.trim().chars().for_each(|ch| {
-        match ch {
-            '^' => y -= 1,
-            '>' => x += 1,
-            'v' => y += 1,
-            '<' => x -= 1,
-            _ => unreachable!("Could not handle character {ch}"),
-        };
+fn handle_direction(coord: &mut Coord<i32>, ch: char) {
+    match ch {
+        '^' => coord.move_up(),
+        '>' => coord.move_right(),
+        'v' => coord.move_down(),
+        '<' => coord.move_left(),
+        _ => unreachable!("Could not handle character {ch}"),
+    };
+}
 
-        *houses.entry((x, y)).or_insert(0) += 1;
+pub fn part_one(input: &str) -> Option<usize> {
+    let mut houses: HashMap<Coord<i32>, u32> = HashMap::new();
+    let mut coord = Coord::new(0, 0);
+    *houses.entry(coord).or_insert(0) += 1;
+    input.trim().chars().for_each(|ch| {
+        handle_direction(&mut coord, ch);
+
+        *houses.entry(coord).or_insert(0) += 1;
     });
 
     Some(houses.iter().filter(|(_, t)| **t > 0).count())
 }
 
 pub fn part_two(input: &str) -> Option<usize> {
-    let mut houses: HashMap<(i32, i32), u32> = HashMap::new();
-    let mut santa_x: i32 = 0;
-    let mut santa_y: i32 = 0;
-    let mut robot_x: i32 = 0;
-    let mut robot_y: i32 = 0;
-    *houses.entry((santa_x, santa_y)).or_insert(0) += 1;
-    *houses.entry((robot_x, robot_y)).or_insert(0) += 1;
+    let mut houses: HashMap<Coord<i32>, u32> = HashMap::new();
+    let mut santa = Coord::new(0, 0);
+    let mut robot = Coord::new(0, 0);
+    *houses.entry(santa).or_insert(0) += 1;
+    *houses.entry(robot).or_insert(0) += 1;
     input.trim().chars().enumerate().for_each(|(index, ch)| {
-        if index % 2 == 0 {
-            match ch {
-                '^' => santa_y -= 1,
-                '>' => santa_x += 1,
-                'v' => santa_y += 1,
-                '<' => santa_x -= 1,
-                _ => unreachable!("Could not handle character {ch} for santa"),
-            };
-            *houses.entry((santa_x, santa_y)).or_insert(0) += 1;
+        if index.is_multiple_of(2) {
+            handle_direction(&mut santa, ch);
+            *houses.entry(santa).or_insert(0) += 1;
         } else {
-            match ch {
-                '^' => robot_y -= 1,
-                '>' => robot_x += 1,
-                'v' => robot_y += 1,
-                '<' => robot_x -= 1,
-                _ => unreachable!("Could not handle character {ch} for robot"),
-            };
-            *houses.entry((robot_x, robot_y)).or_insert(0) += 1;
+            handle_direction(&mut robot, ch);
+            *houses.entry(robot).or_insert(0) += 1;
         }
     });
 
