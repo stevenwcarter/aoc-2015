@@ -1,7 +1,6 @@
 use dashmap::DashSet;
-use hashbrown::{HashMap, HashSet};
+use hashbrown::HashSet;
 use pathfinding::prelude::astar;
-use rayon::prelude::*;
 
 advent_of_code::solution!(19);
 
@@ -92,15 +91,10 @@ pub fn part_two(input: &str) -> Option<usize> {
 
     let result = astar(
         &start,
-        |input| {
-            println!("{}", input.len());
-            replacer.reversed_successors(input)
-        },
+        |input| replacer.reversed_successors(input),
         |input| input.len() / 3,
         |input| input == "e",
     );
-
-    println!("{:#?}", result);
 
     Some(result.unwrap().1)
 }

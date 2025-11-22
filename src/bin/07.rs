@@ -28,7 +28,7 @@ fn parse_u16(input: &str) -> IResult<&str, u16> {
     map_res(digit1, |s: &str| s.parse::<u16>())(input)
 }
 
-fn parse_signal_line(input: &str) -> IResult<&str, SignalType> {
+fn parse_signal_line(input: &'_ str) -> IResult<&'_ str, SignalType<'_>> {
     map(
         separated_pair(parse_identifier, tag(" -> "), parse_identifier),
         |(value, output)| SignalType::Input(value, output),
@@ -67,7 +67,7 @@ fn parse_shift_op<'a>(
     )(input)
 }
 
-fn parse_not(input: &str) -> IResult<&str, SignalType> {
+fn parse_not(input: &'_ str) -> IResult<&'_ str, SignalType<'_>> {
     map(
         tuple((
             tag("NOT "),
@@ -78,7 +78,7 @@ fn parse_not(input: &str) -> IResult<&str, SignalType> {
     )(input)
 }
 
-fn parse_signal(input: &str) -> IResult<&str, SignalType> {
+fn parse_signal(input: &'_ str) -> IResult<&'_ str, SignalType<'_>> {
     nom::branch::alt((
         parse_signal_line,
         |i| parse_binary_op(i, "AND", SignalType::And),
@@ -89,7 +89,7 @@ fn parse_signal(input: &str) -> IResult<&str, SignalType> {
     ))(input)
 }
 
-fn parse_input(input: &str) -> IResult<&str, Vec<SignalType>> {
+fn parse_input(input: &'_ str) -> IResult<&'_ str, Vec<SignalType<'_>>> {
     many1(nom::sequence::terminated(
         parse_signal,
         nom::character::complete::line_ending.or(nom::combinator::eof),

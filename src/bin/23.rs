@@ -91,8 +91,8 @@ impl<'a> Solver<'a> {
                 }
                 JumpIfEven => {
                     let skip = match instruction.arg_a {
-                        "a" => self.a % 2 != 0,
-                        "b" => self.b % 2 != 0,
+                        "a" => !self.a.is_multiple_of(2),
+                        "b" => !self.b.is_multiple_of(2),
                         _ => unreachable!("Unknown register {}", instruction.arg_a),
                     };
                     if skip {

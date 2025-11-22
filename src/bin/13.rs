@@ -34,7 +34,7 @@ fn parse_happiness(input: &str) -> IResult<&str, i64> {
     )(input)
 }
 
-fn parse_pairing(input: &str) -> IResult<&str, Pairing> {
+fn parse_pairing(input: &'_ str) -> IResult<&'_ str, Pairing<'_>> {
     map(
         tuple((
             parse_name,
@@ -52,7 +52,7 @@ fn parse_pairing(input: &str) -> IResult<&str, Pairing> {
     )(input)
 }
 
-fn parse_all(input: &str) -> IResult<&str, Vec<Pairing>> {
+fn parse_all(input: &'_ str) -> IResult<&'_ str, Vec<Pairing<'_>>> {
     nom::multi::separated_list1(tag("\n"), parse_pairing)(input)
 }
 

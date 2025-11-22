@@ -1,42 +1,43 @@
 use hashbrown::HashMap;
 use itertools::Itertools;
-use once_cell::sync::Lazy;
 
 advent_of_code::solution!(14);
 
-static REINDEER: Lazy<Vec<Reindeer>> = Lazy::new(|| {
-    vec![
-        Reindeer::new("Dancer", 27, 5, 132),
-        Reindeer::new("Cupid", 22, 2, 41),
-        Reindeer::new("Rudolph", 11, 5, 48),
-        Reindeer::new("Donner", 28, 5, 134),
-        Reindeer::new("Dasher", 4, 16, 55),
-        Reindeer::new("Blitzen", 14, 3, 38),
-        Reindeer::new("Prancer", 3, 21, 40),
-        Reindeer::new("Comet", 18, 6, 103),
-        Reindeer::new("Vixen", 18, 5, 84),
-    ]
-});
+const REINDEER: [Reindeer; 9] = [
+    Reindeer::new("Dancer", 27, 5, 132),
+    Reindeer::new("Cupid", 22, 2, 41),
+    Reindeer::new("Rudolph", 11, 5, 48),
+    Reindeer::new("Donner", 28, 5, 134),
+    Reindeer::new("Dasher", 4, 16, 55),
+    Reindeer::new("Blitzen", 14, 3, 38),
+    Reindeer::new("Prancer", 3, 21, 40),
+    Reindeer::new("Comet", 18, 6, 103),
+    Reindeer::new("Vixen", 18, 5, 84),
+];
 
-static TEST_REINDEER: Lazy<Vec<Reindeer>> = Lazy::new(|| {
-    vec![
-        Reindeer::new("Comet", 14, 10, 127),
-        Reindeer::new("Dancer", 16, 11, 162),
-    ]
-});
+const TEST_REINDEER: [Reindeer; 2] = [
+    Reindeer::new("Comet", 14, 10, 127),
+    Reindeer::new("Dancer", 16, 11, 162),
+];
 
-#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct Reindeer {
-    pub name: String,
+#[derive(Debug, Clone, Eq, PartialOrd, Ord, Hash)]
+pub struct Reindeer<'a> {
+    pub name: &'a str,
     pub speed: u32,
     pub run_time: u32,
     pub rest_time: u32,
 }
 
-impl Reindeer {
-    pub fn new(name: &str, speed: u32, run_time: u32, rest_time: u32) -> Self {
+impl PartialEq for Reindeer<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.name == other.name
+    }
+}
+
+impl<'a> Reindeer<'a> {
+    pub const fn new(name: &'a str, speed: u32, run_time: u32, rest_time: u32) -> Self {
         Self {
-            name: name.to_string(),
+            name,
             speed,
             run_time,
             rest_time,
@@ -58,12 +59,13 @@ impl Reindeer {
     }
 }
 
-fn get_reindeer_duration(input: &str) -> (&[Reindeer], u32) {
+fn get_reindeer_duration(input: &'_ str) -> (&'_ [Reindeer<'_>], u32) {
     let is_prod = input.len() > 50;
-    let reindeer = if is_prod { &REINDEER } else { &TEST_REINDEER };
-    let duration = if is_prod { 2503 } else { 1000 };
-
-    (reindeer, duration)
+    if is_prod {
+        (&REINDEER, 2503)
+    } else {
+        (&TEST_REINDEER, 1000)
+    }
 }
 
 pub fn part_one(input: &str) -> Option<u32> {
@@ -74,7 +76,7 @@ pub fn part_one(input: &str) -> Option<u32> {
 pub fn part_two(input: &str) -> Option<u32> {
     let (reindeer, duration) = get_reindeer_duration(input);
 
-    let mut scores: HashMap<&Reindeer, u32> = HashMap::new();
+    let mut scores: HashMap<&Reindeer, u32> = HashMap::with_capacity(reindeer.len());
 
     (1..duration).for_each(|duration| {
         // needed `max_set_by` from `Itertools` to return all reindeer involved in a tie

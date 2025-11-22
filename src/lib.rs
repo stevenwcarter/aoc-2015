@@ -4,7 +4,7 @@ pub fn presents_delivered_to_house_part1(input: usize) -> usize {
     let sqrt_n = (input as f64).sqrt() as usize;
 
     (1..=sqrt_n)
-        .filter(|n| input % n == 0)
+        .filter(|n| input.is_multiple_of(*n))
         .map(|n| {
             if n != input / n {
                 (input / n) * 10 + n * 10
@@ -18,7 +18,7 @@ pub fn presents_delivered_to_house_part2(input: usize) -> usize {
     let sqrt_n = (input as f64).sqrt() as usize;
 
     (1..=sqrt_n)
-        .filter(|n| input % n == 0)
+        .filter(|n| input.is_multiple_of(*n))
         .map(|n| {
             let upper_n = input / n;
             if n != upper_n && upper_n * 50 > input {
