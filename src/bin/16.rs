@@ -1,12 +1,12 @@
 advent_of_code::solution!(16);
 
 use nom::{
+    IResult,
     bytes::complete::tag,
     character::complete::{alpha1, digit1, multispace0},
     combinator::map_res,
     multi::separated_list0,
     sequence::separated_pair,
-    IResult,
 };
 use std::collections::HashMap;
 

@@ -12,12 +12,12 @@ use hashbrown::HashMap;
 // NOT y -> i
 
 use nom::{
+    IResult, Parser,
     bytes::complete::{tag, take_while1},
     character::complete::{digit1, space0},
     combinator::{map, map_res},
     multi::many1,
     sequence::{preceded, separated_pair, tuple},
-    IResult, Parser,
 };
 
 fn parse_identifier(input: &str) -> IResult<&str, &str> {

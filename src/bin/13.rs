@@ -3,11 +3,11 @@ advent_of_code::solution!(13);
 use hashbrown::{HashMap, HashSet};
 use itertools::Itertools;
 use nom::{
+    IResult, Parser,
     bytes::complete::{tag, take_until},
     character::complete::digit1,
     combinator::map,
     sequence::tuple,
-    IResult, Parser,
 };
 
 #[derive(Debug, PartialEq)]

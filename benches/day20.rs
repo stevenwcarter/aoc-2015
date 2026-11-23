@@ -1,5 +1,5 @@
 use advent_of_code::{presents_delivered_to_house_part1, presents_delivered_to_house_part2};
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use criterion::{Criterion, black_box, criterion_group, criterion_main};
 
 fn criterion_benchmark(c: &mut Criterion) {
     c.bench_function("day20 presents delivered to house", |b| {
